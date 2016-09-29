@@ -28,12 +28,15 @@
     (:body res)
     fallback-value)))
 
-    
+
 (defmulti call (fn [params] (:method params)))
 
 (defmethod call "GET" [params]
   (let [url (str endpoint (:resource params))
-        opts (merge {:headers (mk-headers) :accept :json :as :json} request-conf)]
+        opts* (merge {:headers (mk-headers) :accept :json :as :json} request-conf)
+        opts (if-not (nil? (:body params))
+              (merge {:query-params (:body params)} opts*)
+              opts*)]
         (try
           (http/get url opts)
           (catch Exception e
