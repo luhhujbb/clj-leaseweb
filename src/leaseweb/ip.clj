@@ -23,7 +23,7 @@
       {:status 403}) 200))
 
 (defn update
-  [reverse-lookup null-routed]
+  [ip-address reverse-lookup null-routed]
   (l/validate
     (if (l/initialized?)
       (l/call {:method "PUT"
