@@ -8,27 +8,35 @@
 
 (defn list
   []
-  (l/validate
+  (:bareMetals (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path})
-      {:status 403}) 200 {:bareMetals []} ))
+      {:status 403}) 200 {:bareMetals []} )))
 
 (defn describe
   [server-id]
-  (l/validate
+  (:bareMetal (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id)})
-      {:status 403}) 200 ))
+      {:status 403}) 200 {:bareMetals nil})))
+
+(defn ips
+  [server-id]
+  (:ips (l/validate
+    (if (l/initialized?)
+      (l/call {:method "GET"
+               :resource (str api-path "/" server-id "/ips")})
+      {:status 403}) 200 {:ips []})))
 
 (defn power-status
   [server-id]
-  (l/validate
+  (:powerStatus (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id "/powerStatus")})
-      {:status 403}) 200 ))
+      {:status 403}) 200 {:powerStatus nil})))
 
 (defn open-switchport
   [server-id]
@@ -65,7 +73,7 @@
 
 (defn bandwidth-usage
   [server-id date-from date-to]
-  (l/validate
+  (:bandwidth (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id "/networkUsage/bandwidth" )
@@ -78,7 +86,7 @@
                                             body)]
                           body*)
                         nil)})
-      {:status 403}) 200 ))
+      {:status 403}) 200 {:bandwidth nil})))
 
 (defn mk-partition-scheme
   "helper to build partition scheme object"
@@ -99,7 +107,7 @@
 
 (defn install-status
   [server-id]
-  (l/validate
+  (:installationStatus (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id "/installationStatus")})
@@ -108,7 +116,7 @@
                               :code 404
                               :description "unknown"
                               :serverPackId "unknown"
-                              :serverName "unknown" }}))
+                              :serverName "unknown" }})))
 
 (defn reboot
   [server-id]

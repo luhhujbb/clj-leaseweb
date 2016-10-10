@@ -8,19 +8,19 @@
 
 (defn list
   []
-  (l/validate
+  (:privateNetworks (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:privateNetworks []} )))
 
 (defn create
   []
-  (l/validate
+  (:id (l/validate
     (if (l/initialized?)
       (l/call {:method "POST"
                :resource api-path})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:id nil} )))
 
 (defn delete
   [pnet-id]
@@ -28,7 +28,7 @@
     (if (l/initialized?)
       (l/call {:method "DELETE"
                :resource api-path "/" pnet-id})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:message "Deletion failed"} ))
 
 (defn describe
   [pnet-id]
@@ -36,7 +36,7 @@
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" pnet-id)})
-      {:status 403}) 200 ))
+      {:status 403}) 200 {:id nil :name nil :bareMetals []}))
 
 (defn add-server
   [pnet-id server-id]

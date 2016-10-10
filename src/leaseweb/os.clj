@@ -8,41 +8,41 @@
 
 (defn list
   []
-  (l/validate
+  (:operatingSystems (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:operatingSystems []} )))
 
 (defn describe
   [os-id]
-  (l/validate
+  (:operatingSystem (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" os-id)})
-      {:status 403}) 200))
+      {:status 403}) 200 {:operatingSystem nil})))
 
 (defn list-control-panels
   [os-id]
-  (l/validate
+  (:controlPanels (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" os-id "/controlPanels")})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:controlPanels []} )))
 
 (defn describe-control-panel
   [os-id cp-id]
-  (l/validate
+  (:controlPanel (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" os-id "/controlPanels/" cp-id)})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:controlPanel nil} )))
 
 (defn partition-schema
   [os-id server-id]
-  (l/validate
+  (:partitionSchema (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" os-id "/partitionSchema")
                :body {:serverPackId server-id} })
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:partitionSchema nil} )))
