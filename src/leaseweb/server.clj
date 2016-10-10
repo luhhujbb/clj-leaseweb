@@ -12,7 +12,7 @@
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:bareMetals []} ))
 
 (defn describe
   [server-id]
@@ -80,7 +80,12 @@
                         nil)})
       {:status 403}) 200 ))
 
+(defn mk-partition-scheme
+  "helper to build partition scheme object"
+  [])
+
 (defn install
+  "Install a serveur"
   [server-id os-id hdd raid-level number-disks]
   (l/validate
     (if (l/initialized?)
@@ -98,7 +103,12 @@
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id "/installationStatus")})
-      {:status 403}) 200 ))
+      {:status 403}) 200 {:installationStatus
+                            {
+                              :code 404
+                              :description "unknown"
+                              :serverPackId "unknown"
+                              :serverName "unknown" }}))
 
 (defn reboot
   [server-id]

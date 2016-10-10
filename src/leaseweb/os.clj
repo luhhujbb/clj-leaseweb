@@ -43,5 +43,6 @@
   (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
-               :resource (str api-path "/" os-id "/partitionSchema?serverPackId=" server-id) })
+               :resource (str api-path "/" os-id "/partitionSchema")
+               :body {:serverPackId server-id} })
       {:status 403}) 200 {} ))
