@@ -92,6 +92,17 @@
   "helper to build partition scheme object"
   [])
 
+(defn get-init-root-password
+  "retrieve initial rootpassword"
+  [server-id]
+  (:rootpassword
+  (l/validate
+    (if (l/initialized?)
+      (l/call {:method "GET"
+               :resource (str api-path "/" server-id "/rootPassowrd")})
+      {:status 403}) 200 {:rootpassword nil})))
+
+
 (defn install
   "Install a serveur"
   [server-id os-id hdd raid-level number-disks]
