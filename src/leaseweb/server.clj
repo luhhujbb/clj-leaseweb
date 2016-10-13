@@ -95,12 +95,12 @@
 (defn get-init-root-password
   "retrieve initial rootpassword"
   [server-id]
-  (:rootpassword
+  (:rootPassword
   (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
-               :resource (str api-path "/" server-id "/rootPassowrd")})
-      {:status 403}) 200 {:rootpassword nil})))
+               :resource (str api-path "/" server-id "/rootPassword")})
+      {:status 403}) 200 {:rootPassword nil})))
 
 
 (defn install
