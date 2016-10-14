@@ -22,6 +22,20 @@
                :resource (str api-path "/" server-id)})
       {:status 403}) 200 {:bareMetals nil})))
 
+(defn suggested-raid-configuration
+  [server-description]
+  (let [disks-conf (get-in server-description [:server :hardDisks] nil)]
+        (if-let [match (get (re-matches #"([0-9]+)x.*" disks-conf) 1)]
+          (let [disk-nb (Long/parseLong match)]
+            {:number-disks disk-nb
+             :raid-level (cond
+                            (= 2 disk-nb) 1
+                            (= 3 disk-nb) 5
+                            (= 4 disk-nb) 5
+                            (> disk-nb 4) 6
+                            :else nil)})
+          nil)))
+
 (defn ips
   [server-id]
   (:ips (l/validate
