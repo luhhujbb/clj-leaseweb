@@ -12,7 +12,7 @@
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path})
-      {:status 403}) 200 {:bareMetals []} )))
+      {:status 403}) 200 {:bareMetals nil} )))
 
 (defn describe
   [server-id]
