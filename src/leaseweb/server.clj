@@ -125,7 +125,7 @@
       (l/call {:method "POST"
                :resource (str api-path "/" server-id "/install" )
                :body {:osId os-id
-                      :hdd (generate-string hdd)
+                      :hdd hdd
                       :raidLevel raid-level
                       :numberDisks number-disks}})
       {:status 403}) 200))
