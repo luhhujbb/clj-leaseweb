@@ -20,6 +20,32 @@
 
 (defn mk-headers [] {"X-Lsw-Auth" (:token @creds)})
 
+(defn- prs-subkey
+  [key subkey]
+  (if (= "" key)
+    subkey
+    (str key "[" subkey "]")))
+
+(defn build-nested-params
+  [key params]
+  (loop [prs params
+          acc {}]
+    (if-let [a (first prs)]
+      (let [[k v] a]
+      (cond
+        (map? v) (recur (rest prs) (merge acc (build-nested-params (prs-subkey key (name k)) v)))
+        (sequential? v) (recur (rest prs) (loop [idx 0
+                                                    skey (prs-subkey key (name k))
+                                                    seqv v
+                                                    accc acc]
+                                                (if-let [item (first seqv)]
+                                                  (recur (inc idx) skey (rest seqv) (merge accc (build-nested-params (prs-subkey skey idx) item)))
+                                                  accc)))
+        (string? v) (recur (rest prs) (assoc acc (prs-subkey key (name k)) v))
+        :else (recur (rest prs) (assoc acc (prs-subkey key (name k)) v))
+      ))
+      acc)))
+
 (defn validate
   ([res code]
     (validate res code nil))

@@ -117,6 +117,7 @@
       {:status 403}) 200 {:rootPassword nil})))
 
 
+
 (defn install
   "Install a serveur"
   [server-id os-id hdd raid-level number-disks]
@@ -124,11 +125,11 @@
     (if (l/initialized?)
       (l/call {:method "POST"
                :resource (str api-path "/" server-id "/install" )
-               :body {:osId os-id
+               :body (l/build-nested-params "" {:osId os-id
                       :hdd hdd
                       :raidLevel raid-level
-                      :numberDisks number-disks}})
-      {:status 403}) 200))
+                      :numberDisks number-disks})})
+      {:status 403}) 200 "error"))
 
 (defn install-status
   [server-id]
