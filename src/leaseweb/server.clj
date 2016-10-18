@@ -20,7 +20,7 @@
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id)})
-      {:status 403}) 200 {:bareMetals nil})))
+      {:status 403}) 200 {:bareMetal nil})))
 
 (defn suggested-raid-configuration
   [server-description]
