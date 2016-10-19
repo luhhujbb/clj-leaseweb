@@ -28,6 +28,7 @@
 
 (defn build-nested-params
   [key params]
+  (into (sorted-map)
   (loop [prs params
           acc {}]
     (if-let [a (first prs)]
@@ -44,7 +45,7 @@
         (string? v) (recur (rest prs) (assoc acc (prs-subkey key (name k)) v))
         :else (recur (rest prs) (assoc acc (prs-subkey key (name k)) v))
       ))
-      acc)))
+      acc))))
 
 (defn validate
   ([res code]

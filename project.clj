@@ -1,6 +1,6 @@
-(defproject leaseweb "0.2.0"
+(defproject leaseweb "0.2.1"
   :description "A clojure lib to interact with leaseweb dedicated server API"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/luhhujbb/clj-leaseweb"
   :license {:name "Eclipse Public License"
   :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
