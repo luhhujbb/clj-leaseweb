@@ -8,19 +8,19 @@
 
 (defn list
   []
-  (l/validate
+  (:ips (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path})
-      {:status 403}) 200 {} ))
+      {:status 403}) 200 {:ips nil} )))
 
 (defn describe
   [ip-address]
-  (l/validate
+  {:ip (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource api-path "/" ip-address})
-      {:status 403}) 200))
+      {:status 403}) 200 {:ip nil})})
 
 (defn update
   [ip-address reverse-lookup null-routed]

@@ -70,7 +70,7 @@
 
 (defn network-usage
   [server-id date-from date-to]
-  (l/validate
+   (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
                :resource (str api-path "/" server-id "/networkUsage?" )
@@ -83,14 +83,14 @@
                                             body)]
                           body*)
                         nil)})
-      {:status 403}) 200 ))
+      {:status 403}) 200 {:bandwidth nil :datatraffic nil}))
 
 (defn bandwidth-usage
   [server-id date-from date-to]
   (:bandwidth (l/validate
     (if (l/initialized?)
       (l/call {:method "GET"
-               :resource (str api-path "/" server-id "/networkUsage/bandwidth" )
+               :resource (str api-path "/" server-id "/networkUsage/bandwidth?" )
                :body (if-not (and (nil? date-from) (nil? date-to))
                         (let [body (if-not (nil? date-from)
                                       {:dateFrom date-from}
@@ -101,6 +101,23 @@
                           body*)
                         nil)})
       {:status 403}) 200 {:bandwidth nil})))
+
+(defn datatraffic-usage
+  [server-id date-from date-to]
+  (:datatraffic (l/validate
+    (if (l/initialized?)
+      (l/call {:method "GET"
+               :resource (str api-path "/" server-id "/networkUsage/datatraffic?" )
+               :body (if-not (and (nil? date-from) (nil? date-to))
+                        (let [body (if-not (nil? date-from)
+                                      {:dateFrom date-from}
+                                      {})
+                              body* (if-not (nil? date-to)
+                                            (assoc body :dateTo date-to)
+                                            body)]
+                          body*)
+                        nil)})
+      {:status 403}) 200 {:datatraffic nil})))
 
 (defn mk-partition-scheme
   "helper to build partition scheme object"
