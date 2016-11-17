@@ -140,12 +140,17 @@
   [server-id os-id hdd raid-level number-disks]
   (l/validate
     (if (l/initialized?)
-      (l/call {:method "POST"
+      (let [res (l/call {:method "POST"
                :resource (str api-path "/" server-id "/install" )
                :body (l/build-nested-params "" {:osId os-id
                       :hdd hdd
                       :raidLevel raid-level
-                      :numberDisks number-disks})})
+                      :numberDisks number-disks})})]
+            (if (not (= 404 (:status res)))
+              res
+              (do
+                (log/error "[LSW]" (:body res))
+                res)))
       {:status 403}) 200 "error"))
 
 (defn install-status
