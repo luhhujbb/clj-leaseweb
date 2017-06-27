@@ -22,6 +22,13 @@
                :resource (str api-path "/" server-id)})
       {:status 403}) 200 {:bareMetal nil})))
 
+(defn set-reference
+  [server-id reference]
+  (when (l/initialized?)
+    (l/call {:method "PUT"
+             :resource (str api-path "/" server-id)
+             :body {:reference reference}})))
+
 (defn suggested-raid-configuration
   [server-description]
   (let [disks-conf (get-in server-description [:server :hardDisks] nil)]

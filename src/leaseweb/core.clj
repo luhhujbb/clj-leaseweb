@@ -74,7 +74,7 @@
   (let [url (str endpoint (:resource params))
         opts (merge {:form-params (:body params) :headers (mk-headers)} request-conf)]
       (try
-        (http/post url opts)
+        (http/put url opts)
         (catch Exception e
           (log/error "Ressource : "url "- Error :" e)
           {:status 500}))))
