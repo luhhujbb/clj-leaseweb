@@ -5,6 +5,7 @@ A clojure lib to interact with leaseweb dedicated server API
 ## Usage
 
 Import this lib on your project and interact with leaseweb API
+
 	[luhhujbb/leaseweb "0.2.3"]
 
 ## License
