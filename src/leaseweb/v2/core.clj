@@ -1,11 +1,11 @@
-(ns leaseweb.v1.core
+(ns leaseweb.v2.core
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all]
             [clj-http.client :as http]
             [digest]))
 
-(def endpoint "https://api.leaseweb.com/v2")
+(def endpoint "https://api.leaseweb.com")
 
 (def request-conf {:accept :json
                    :as :json
@@ -16,6 +16,8 @@
                   :throw-exceptions false})
 
 (defn mk-headers [client] {"X-Lsw-Auth" (:token client)})
+
+(defn mk-client [token] {:token token})
 
 (defn validate
   ([res code]
@@ -31,8 +33,8 @@
 (defmethod call "GET" [client params]
   (let [url (str endpoint (:resource params))
         opts* (merge {:headers (mk-headers client) :accept :json :as :json} request-conf)
-        opts (if-not (nil? (:body params))
-              (merge {:query-params (:body params)} opts*)
+        opts (if-not (nil? (:query-params params))
+              (merge {:query-params (:query-params params)} opts*)
               opts*)]
         (try
           (http/get url opts)
@@ -69,8 +71,3 @@
 
 (defmethod call :default [client params]
   (log/info "Unsupported http verb"))
-
-(defn init!
-  [token]
-  (swap! creds assoc :token token)
-  (reset! initialized true))
