@@ -1,4 +1,4 @@
-(ns leaseweb.core
+(ns leaseweb.v1.core
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all]
