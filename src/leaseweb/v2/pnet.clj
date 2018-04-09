@@ -4,7 +4,7 @@
             [cheshire.core :refer :all]
             [leaseweb.v2.core :as l]))
 
-(def api-path "/v2/privateNetworks")
+(def api-path "/bareMetals/v2/privateNetworks")
 
 (defn list
   [client {:keys [offset limit]}]
