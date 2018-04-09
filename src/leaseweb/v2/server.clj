@@ -109,6 +109,12 @@
                       :query-params (into {} (remove (comp nil? second) query-params))})
        200 {:servers nil :_metadata {:error true}}))
 
+(defn describe-job
+    [client server job-uuid]
+    (l/validate
+        (l/call client {:method "GET"
+                        :resource (str api-path "/servers/" server "/jobs/" job-uuid)})))
+
 (defn list-all-jobs
     [client & {:keys [batch-size] :or {batch-size 50}}]
     (let [jobs (loop [js []
@@ -133,6 +139,10 @@
                :resource (str api-path "/servers/" server-id "/metrics/datatraffic")
                :query-params (into {} (remove (comp nil? second) query-params))}) 200))
 
+(defn install-status
+ [client server-id uuid]
+ (describe-job client server-id uuid))
+
 ;; to be updated (need to update also client)
 
 (defn install
@@ -150,15 +160,3 @@
               (do
                 (log/error "[LSW]" (:body res))
                 res))) 200 "error"))
-
-(defn install-status
-  [client server-id]
-  (:installationStatus (l/validate
-      (l/call client {:method "GET"
-               :resource (str api-path "/" server-id "/installationStatus")})
-               200 {:installationStatus
-                            {
-                              :code 404
-                              :description "unknown"
-                              :serverPackId "unknown"
-                              :serverName "unknown" }})))
