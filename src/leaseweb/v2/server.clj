@@ -4,7 +4,7 @@
             [cheshire.core :refer :all]
             [leaseweb.v2.core :as l]))
 
-(def api-path "/bareMetals/v2")
+(def api-path "/bareMetals/v2/servers")
 
 ;;updated
 
@@ -12,7 +12,7 @@
   [client & {:keys [offset limit ip macAddress reference site] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
-                      :resource (str api-path "/servers")
+                      :resource api-path
                       :query-params (into {} (remove (comp nil? second) query-params))})
        200 {:servers nil :_metadata {:error true}}))
 
@@ -30,13 +30,13 @@
   [client server-id]
     (l/validate
       (l/call client {:method "GET"
-               :resource (str api-path "/servers/" server-id)})
+               :resource (str api-path "/" server-id)})
      200 {:id nil}))
 
 (defn set-reference
   [client server-id reference]
     (l/call client {:method "PUT"
-             :resource (str api-path "/servers/" server-id)
+             :resource (str api-path "/" server-id)
              :body {:reference reference}}))
 
 
@@ -105,7 +105,7 @@
     [client server & {:keys [offset limit] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
-                      :resource (str api-path "/servers/" server "/jobs")
+                      :resource (str api-path "/" server "/jobs")
                       :query-params (into {} (remove (comp nil? second) query-params))})
        200 {:servers nil :_metadata {:error true}}))
 
@@ -113,7 +113,7 @@
     [client server job-uuid]
     (l/validate
         (l/call client {:method "GET"
-                        :resource (str api-path "/servers/" server "/jobs/" job-uuid)})))
+                        :resource (str api-path "/" server "/jobs/" job-uuid)})))
 
 (defn list-all-jobs
     [client & {:keys [batch-size] :or {batch-size 50}}]
@@ -129,14 +129,14 @@
   [client server-id & {:keys [from to granularity aggregation] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
-                      :resource (str api-path "/servers/" server-id "/metrics/bandwidth")
+                      :resource (str api-path "/" server-id "/metrics/bandwidth")
                       :query-params (into {} (remove (comp nil? second) query-params))}) 200))
 
 (defn datatraffic-usage
   [client server-id & {:keys [from to granularity aggregation] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
-               :resource (str api-path "/servers/" server-id "/metrics/datatraffic")
+               :resource (str api-path "/" server-id "/metrics/datatraffic")
                :query-params (into {} (remove (comp nil? second) query-params))}) 200))
 
 (defn install-status
@@ -147,14 +147,16 @@
 
 (defn install
   "Install a serveur"
-  [client server-id os-id hdd raid-level number-disks]
+  [client server-id os-id hdd raid-level number-disks raid-type sshKeys]
   (l/validate
       (let [res (l/call client {:method "POST"
                :resource (str api-path "/" server-id "/install" )
-               :body  {:osId os-id
-                       :hdd hdd
-                       :raidLevel raid-level
-                       :numberDisks number-disks}})]
+               :body  {:operatingSystemId os-id
+                       :sshKeys sshKeys
+                       :partitions hdd
+                       :raid {:level raid-level
+                              :numberOfDisks number-disks
+                              :type raid-type}}})]
             (if (not (= 404 (:status res)))
               res
               (do
