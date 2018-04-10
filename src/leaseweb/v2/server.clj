@@ -1,4 +1,5 @@
 (ns leaseweb.v2.server
+  (:import [java.util Base64 Base64$Encoder])
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all]
@@ -140,27 +141,34 @@
   [client server-id & {:keys [from to granularity aggregation] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
-               :resource (str api-path "/" server-id "/metrics/datatraffic")
-               :query-params (into {} (remove (comp nil? second) query-params))}) 200))
+                      :resource (str api-path "/" server-id "/metrics/datatraffic")
+                      :query-params (into {} (remove (comp nil? second) query-params))}) 200))
 
 (defn install-status
- [client server-id uuid]
- (describe-job client server-id uuid))
+    [client server-id uuid]
+    (describe-job client server-id uuid))
 
-;; to be updated (need to update also client)
+(defn mk-post-install-script
+    "Helper to build postinstall script"
+    [commands]
+    (let [Base64$Encoder encoder
+          commands-string (str "#!/bin/bash\n"
+                               (str/join ";" commands))
+            (.encodeToString encoder (.getBytes commands-string))))
 
 (defn install
   "Install a serveur"
-  [client server-id os-id hdd raid-level number-disks raid-type sshKeys]
+  [client server-id os-id hdd raid-level number-disks raid-type ssh-keys post-install-script]
   (l/validate
       (let [res (l/call client {:method "POST"
-               :resource (str api-path "/" server-id "/install" )
+               :resource (str api-path "/" server-id "/install")
                :body  {:operatingSystemId os-id
-                       :sshKeys sshKeys
+                       :sshKeys ssh-keys
                        :partitions hdd
                        :raid {:level raid-level
                               :numberOfDisks number-disks
-                              :type raid-type}}})]
+                              :type raid-type}
+                       :postInstallScript post-install-script}})]
             (if (not (= 404 (:status res)))
               res
               (do
