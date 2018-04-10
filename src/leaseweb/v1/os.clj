@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
             [cheshire.core :refer :all]
-            [leaseweb.core :as l]))
+            [leaseweb.v1.core :as l]))
 
 (def api-path "/operatingSystems")
 
