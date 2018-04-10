@@ -151,9 +151,9 @@
 (defn mk-post-install-script
     "Helper to build postinstall script"
     [commands]
-    (let [Base64$Encoder encoder
+    (let [^Base64$Encoder encoder (Base64/getEncoder)
           commands-string (str "#!/bin/bash\n"
-                               (str/join ";" commands))
+                               (str/join ";" commands))]
             (.encodeToString encoder (.getBytes commands-string))))
 
 (defn install
