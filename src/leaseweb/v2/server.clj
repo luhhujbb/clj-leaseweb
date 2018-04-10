@@ -21,9 +21,11 @@
     (let [servers (loop [ss []
                         offset 0]
           (let [ss-batch (leaseweb.v2.server/list client :limit batch-size :offset offset)]
-            (if (= (count (:servers ss-batch)) batch-size)
-                (recur (concat ss (:servers ss-batch)) (+ offset batch-size))
-                (concat ss (:servers ss-batch)))))]
+            (if-not (nil? (:servers ss-batch))
+                (if (= (count (:servers ss-batch)) batch-size)
+                    (recur (concat ss (:servers ss-batch)) (+ offset batch-size))
+                    (concat ss (:servers ss-batch)))
+                nil)))]
         {:servers servers :_metadata {:totalCount (count servers) :offset 0}}))
 
 (defn describe
@@ -120,9 +122,11 @@
     (let [jobs (loop [js []
                         offset 0]
           (let [js-batch (leaseweb.v2.server/list-jobs client :limit batch-size :offset offset)]
-            (if (= (count (:jobs js-batch)) batch-size)
-                (recur (concat js (:jobs js-batch)) (+ offset batch-size))
-                (concat js (:jobs js-batch)))))]
+            (if-not (nil? (:jobs js-batch))
+                (if (= (count (:jobs js-batch)) batch-size)
+                    (recur (concat js (:jobs js-batch)) (+ offset batch-size))
+                    (concat js (:jobs js-batch)))
+                nil)))]
         {:jobs jobs :_metadata {:totalCount (count jobs) :offset 0}}))
 
 (defn bandwidth-usage
