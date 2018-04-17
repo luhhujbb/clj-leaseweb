@@ -7,10 +7,11 @@
 (def api-path "/bareMetals/v2/privateNetworks")
 
 (defn list
-  [client {:keys [offset limit]}]
+  [client & {:keys [offset limit] :as query-params}]
   (l/validate
       (l/call client {:method "GET"
-               :resource api-path}) 200))
+                      :query-params (into {} (remove (comp nil? second) query-params))})
+                      :resource api-path}) 200))
 
 (defn create
   [client]
