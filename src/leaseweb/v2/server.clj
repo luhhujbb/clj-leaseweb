@@ -10,6 +10,7 @@
 ;;updated
 
 (defn list
+  "[TESTED] Return a batch of servers"
   [client & {:keys [offset limit ip macAddress reference site] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
@@ -18,6 +19,7 @@
        200 {:servers nil :_metadata {:error true}}))
 
 (defn list-all
+    "[TESTED] Return all servers"
     [client & {:keys [batch-size] :or {batch-size 50}}]
     (let [servers (loop [ss []
                         offset 0]
@@ -30,6 +32,7 @@
         {:servers servers :_metadata {:totalCount (count servers) :offset 0}}))
 
 (defn describe
+  "[TESTED] get server description"
   [client server-id]
     (l/validate
       (l/call client {:method "GET"
@@ -37,6 +40,7 @@
      200 {:id nil}))
 
 (defn set-reference
+  "[TESTED] set server reference"
   [client server-id reference]
     (l/call client {:method "PUT"
              :resource (str api-path "/" server-id)
@@ -44,6 +48,7 @@
 
 
 (defn suggested-raid-configuration
+  "[TESTED] return a raid configuration suggestion"
   [server-description]
   (let [disks-conf (get-in server-description [:specs :hdd 0] nil)]
           (let [disk-nb (:amount disks-conf)]
@@ -56,6 +61,7 @@
                             :else nil)})))
 
 (defn power-status
+    "[TESTED] power status of a server"
     [client server-id]
     (:pdu (l/validate
         (l/call client {:method "GET"
@@ -63,6 +69,7 @@
             200 {:pdu nil})))
 
 (defn ips
+  "[TESTED] return server ip"
   [client server-id]
   (:ips (l/validate
       (l/call client {:method "GET"
@@ -70,6 +77,7 @@
                200 {:ips nil})))
 
 (defn get-os-user
+    "[TESTED]"
     [client server-id user]
     (l/validate
       (l/call client {:method "GET"
@@ -77,7 +85,7 @@
                200))
 
 (defn get-init-root-password
-  "retrieve initial rootpassword"
+  "[TESTED] retrieve initial rootpassword"
   [client server]
   (when-let [user (get-os-user client server "root")]
     (:password user)))
@@ -95,16 +103,17 @@
   (l/validate
       (l/call client {:method "POST"
                :resource (str api-path "/" server-id "/networkInterfaces/open")})
-               2004))
+               204))
 
 (defn close-interfaces
   [client server-id]
   (l/validate
       (l/call client {:method "POST"
                :resource (str api-path "/" server-id "/networkInterfaces/close")})
-                204 ))
+                204))
 
 (defn list-jobs
+    "Return a batch of jobs"
     [client server & {:keys [offset limit] :as query-params}]
     (l/validate
       (l/call client {:method "GET"
@@ -113,16 +122,18 @@
        200 {:servers nil :_metadata {:error true}}))
 
 (defn describe-job
+    "[TESTED] describe a single job identified by uuid"
     [client server job-uuid]
     (l/validate
         (l/call client {:method "GET"
-                        :resource (str api-path "/" server "/jobs/" job-uuid)})))
+                        :resource (str api-path "/" server "/jobs/" job-uuid)}) 200))
 
 (defn list-all-jobs
-    [client & {:keys [batch-size] :or {batch-size 50}}]
+    "[TESTED] list all job of server"
+    [client server & {:keys [batch-size] :or {batch-size 50}}]
     (let [jobs (loop [js []
                         offset 0]
-          (let [js-batch (leaseweb.v2.server/list-jobs client :limit batch-size :offset offset)]
+          (let [js-batch (leaseweb.v2.server/list-jobs client server :limit batch-size :offset offset)]
             (if-not (nil? (:jobs js-batch))
                 (if (= (count (:jobs js-batch)) batch-size)
                     (recur (concat js (:jobs js-batch)) (+ offset batch-size))
@@ -131,25 +142,23 @@
         {:jobs jobs :_metadata {:totalCount (count jobs) :offset 0}}))
 
 (defn bandwidth-usage
-  [client server-id & {:keys [from to granularity aggregation] :as query-params}]
+  "[TESTED] From and to are mandatory"
+  [client server-id & {:keys [from to granularity aggregation] :or {aggregation "AVG"} :as query-params}]
     (l/validate
       (l/call client {:method "GET"
                       :resource (str api-path "/" server-id "/metrics/bandwidth")
                       :query-params (into {} (remove (comp nil? second) query-params))}) 200))
 
 (defn datatraffic-usage
-  [client server-id & {:keys [from to granularity aggregation] :as query-params}]
+  "[TESTED] From and to are mandatory"
+  [client server-id & {:keys [from to granularity aggregation] :or {aggregation "SUM"} :as query-params}]
     (l/validate
       (l/call client {:method "GET"
                       :resource (str api-path "/" server-id "/metrics/datatraffic")
                       :query-params (into {} (remove (comp nil? second) query-params))}) 200))
 
-(defn install-status
-    [client server-id uuid]
-    (describe-job client server-id uuid))
-
 (defn mk-post-install-script
-    "Helper to build postinstall script"
+    "[TESTED] Helper to build postinstall script"
     [commands]
     (let [^Base64$Encoder encoder (Base64/getEncoder)
           commands-string (str "#!/bin/bash\n"
