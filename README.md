@@ -1,3 +1,5 @@
+[![Clojars Project](https://img.shields.io/clojars/v/luhhujbb/leaseweb.svg)](https://clojars.org/luhhujbb/leaseweb)
+
 # clj-leaseweb
 
 A clojure lib to interact with leaseweb dedicated server API
