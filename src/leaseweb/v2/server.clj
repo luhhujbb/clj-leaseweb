@@ -95,7 +95,8 @@
   [client server-id]
   (l/validate
       (l/call client {:method "POST"
-               :resource (str api-path "/" server-id "/powerCycle")})
+               :resource (str api-path "/" server-id "/powerCycle")
+               :body {}})
                 202))
 
 (defn open-interfaces

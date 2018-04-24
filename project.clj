@@ -1,4 +1,4 @@
-(defproject luhhujbb/leaseweb "0.3.0"
+(defproject luhhujbb/leaseweb "0.3.1"
   :description "A clojure lib to interact with leaseweb dedicated server API"
   :url "https://github.com/luhhujbb/clj-leaseweb"
   :license {:name "Eclipse Public License"
