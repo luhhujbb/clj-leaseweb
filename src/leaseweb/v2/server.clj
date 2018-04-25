@@ -50,7 +50,7 @@
 (defn suggested-raid-configuration
   "[TESTED] return a raid configuration suggestion"
   [server-description]
-  (let [disks-conf (get-in server-description [:specs :hdd 0] nil)]
+  (let [disks-conf (first (get-in server-description [:specs :hdd] nil))]
           (let [disk-nb (:amount disks-conf)]
             {:number-disks disk-nb
              :raid-level (cond
