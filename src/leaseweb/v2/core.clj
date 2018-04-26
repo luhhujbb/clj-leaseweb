@@ -13,7 +13,8 @@
 
 (def request-alt-conf {:accept :json
                   :as :json
-                  :throw-exceptions false})
+                  :throw-exceptions false
+                  :content-type :json})
 
 (defn mk-headers [client] {"X-Lsw-Auth" (:token client)})
 
