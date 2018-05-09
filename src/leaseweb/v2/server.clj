@@ -169,18 +169,19 @@
 (defn install
   "Install a serveur"
   [client server-id os-id hdd raid-level number-disks raid-type ssh-keys post-install-script]
+  (let [body {:operatingSystemId os-id
+              :sshKeys ssh-keys
+              :partitions hdd
+              :raid {:level raid-level
+                 :numberOfDisks number-disks
+                 :type raid-type}
+              :postInstallScript post-install-script}]
   (l/validate
       (let [res (l/call client {:method "POST"
                :resource (str api-path "/" server-id "/install")
-               :body  {:operatingSystemId os-id
-                       :sshKeys ssh-keys
-                       :partitions hdd
-                       :raid {:level raid-level
-                              :numberOfDisks number-disks
-                              :type raid-type}
-                       :postInstallScript post-install-script}})]
+               :body (into {} (remove (comp nil? second) body))})]
             (if (not (= 404 (:status res)))
               res
               (do
                 (log/error "[LSW]" (:body res))
-                res))) 202 "error"))
+                res))) 202 "error")))
