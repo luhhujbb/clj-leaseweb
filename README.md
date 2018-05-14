@@ -8,7 +8,7 @@ A clojure lib to interact with leaseweb dedicated server API
 
 Import this lib on your project and interact with leaseweb API
 
-	[luhhujbb/leaseweb "0.2.3"]
+	[luhhujbb/leaseweb "0.3.5"]
 
 ## API Version
 
