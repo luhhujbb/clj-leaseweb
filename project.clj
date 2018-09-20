@@ -1,4 +1,4 @@
-(defproject luhhujbb/leaseweb "0.3.5"
+(defproject luhhujbb/leaseweb "0.3.6"
   :description "A clojure lib to interact with leaseweb dedicated server API"
   :url "https://github.com/luhhujbb/clj-leaseweb"
   :license {:name "Eclipse Public License"
@@ -12,7 +12,7 @@
                 [log4j "1.2.17"]
                 [clj-time "0.11.0"]
                 ;;for dd
-                [clj-http "2.3.0"]
+                [clj-http "3.7.0"]
                 [cheshire "5.8.0"]
                 [digest "1.4.4"]]
   :aot :all
