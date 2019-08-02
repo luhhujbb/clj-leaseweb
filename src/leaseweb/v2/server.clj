@@ -180,8 +180,10 @@
       (let [res (l/call client {:method "POST"
                :resource (str api-path "/" server-id "/install")
                :body (into {} (remove (comp nil? second) body))})]
-            (if (not (= 404 (:status res)))
-              res
+            (if (= 202 (:status res))
+              (do
+                (log/info "[LSW]" (:body res))
+                res)
               (do
                 (log/error "[LSW]" (:body res))
                 res))) 202 "error")))
